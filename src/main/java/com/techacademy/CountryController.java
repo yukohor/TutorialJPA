@@ -3,6 +3,7 @@ package com.techacademy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class CountryController {
     }
 
     @GetMapping(value = { "/detail", "/detail/{code}/" })
-    public String getCountry(@PathVariable(name = "code", required = false) String code, Model model) {
+    public String detailCountryFrom(@PathVariable(name = "code", required = false) String code, Model model) {
         Country country = code != null ? service.getCountry(code) : new Country();
         model.addAttribute("country", country);
         return "country/detail";
@@ -33,13 +34,13 @@ public class CountryController {
     @PostMapping("/detail")
     public String postCountry(@RequestParam("code") String code, @RequestParam("name") String name,
             @RequestParam("population") int population, Model model) {
-        service.updateCountry(code, name, population);
-
         return "redirect:/country/list";
     }
 
-    @GetMapping("/delete")
-    public String deleteCountryForm(Model model) {
+    @GetMapping(value = { "/delete", "/delete/{code}/" })
+    public String deleteCountryForm(@PathVariable(name = "code", required = false) String code, Model model) {
+        Country country = code != null ? service.getCountry(code) : new Country();
+        model.addAttribute("country", country);
         return "country/delete";
     }
 
@@ -49,4 +50,8 @@ public class CountryController {
 
         return "redirect:/country/list";
     }
-}
+
+
+    }
+
+
